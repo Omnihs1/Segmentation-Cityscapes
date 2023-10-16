@@ -110,14 +110,16 @@ colors = [   [  0,   0,   0],
     ]
 
 label_colours = dict(zip(range(n_classes), colors))
+colors = np.asarray(colors)
 
-def encode_mask(mask, colors):
+def encode_mask(mask):
+    mask_reshape = mask.reshape(-1, 3)
     for i in range(len(colors)):
         if i == 0:
-            a = np.sum(abs(mask - colors[i]), axis = 1).reshape(-1, 1)
+            distance_array = np.sum(abs(mask_reshape - colors[i]), axis = 1).reshape(-1, 1)
         else:
-            b = np.sum(abs(mask - colors[i]), axis = 1).reshape(-1, 1)
-            a = np.concatenate((a, b), axis = 1)
-    max_indices = np.argmin(a, axis=1).reshape(-1, 256)
+            temp = np.sum(abs(mask_reshape - colors[i]), axis = 1).reshape(-1, 1)
+            distance_array = np.concatenate((distance_array, temp), axis = 1)
+    max_indices = np.argmin(distance_array, axis=1).reshape(-1, 256)
     return max_indices
         
