@@ -44,7 +44,7 @@ if __name__ == "__main__":
     random_number = random.randint(0, len(a.img_list))
     print(random_number)
     print(a.img_list[random_number])
-    img, label, mask = a.__getitem__(random_number)
+    img, label, mask = a.__getitem__(810)
     print(np.unique(mask))
     print(type(img))
     print(type(mask))

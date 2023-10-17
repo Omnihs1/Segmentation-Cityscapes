@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple 
 import numpy as np
 
 Label = namedtuple( 'Label' , [
@@ -87,6 +87,30 @@ class_map = dict(zip(valid_classes, range(len(valid_classes))))
 n_classes=len(valid_classes)
 # class_map
 
+# colors = [   [  0,   0,   0], #0
+#         [128, 64, 128], #1
+#         [244, 35, 232], #1
+#         [70, 70, 70], #1
+#         [102, 102, 156], #2 
+#         [190, 153, 153], #2
+#         [153, 153, 153], #3
+#         [250, 170, 30], #3
+#         [220, 220, 0], #3
+#         [107, 142, 35], #4
+#         [152, 251, 152], #4
+#         [70, 130, 180], #5
+#         [220, 20, 60], #6
+#         [255, 0, 0], #6
+#         [0, 0, 142], #7
+#         [0, 0, 70], #7
+#         [0, 60, 100], #7
+#         [0, 80, 100], #7
+#         [0, 0, 230], #7
+#         [119, 11, 32], #7
+#     ]
+
+
+
 colors = [   [  0,   0,   0],
         [128, 64, 128],
         [244, 35, 232],
@@ -111,7 +135,10 @@ colors = [   [  0,   0,   0],
 
 label_colours = dict(zip(range(n_classes), colors))
 colors = np.asarray(colors)
-
+colors_to_group = {0:0, 1:1, 2:1, 3:1, 4:2, 5:2, 6:3, 7:3, 8:3, \
+                   9:4, 10:4, 11:5, 12:6, 13:6, 14:7, 15:7, \
+                   16: 7, 17: 7, 18: 7, 19:7}
+# print(colors_to_group[0])
 def encode_mask(mask):
     mask_reshape = mask.reshape(-1, 3)
     for i in range(len(colors)):
@@ -120,6 +147,10 @@ def encode_mask(mask):
         else:
             temp = np.sum(abs(mask_reshape - colors[i]), axis = 1).reshape(-1, 1)
             distance_array = np.concatenate((distance_array, temp), axis = 1)
+    index_to_category_mapping = lambda x: colors_to_group[x]
+    vectorized_category_mapping = np.vectorize(index_to_category_mapping)
     max_indices = np.argmin(distance_array, axis=1).reshape(-1, 256)
-    return max_indices
+    category_indices = vectorized_category_mapping(max_indices).reshape(-1, 256)
+    return category_indices
+    # return max_indices
         
